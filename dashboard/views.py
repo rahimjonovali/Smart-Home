@@ -1,27 +1,40 @@
-from django.views.generic import TemplateView,CreateView
+from django.views.generic import TemplateView,CreateView,UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 import paho.mqtt.publish as publish
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
+from .models import Broker
+from .forms import BrokerForm
 
-class ControlPanelView(LoginRequiredMixin,TemplateView):
+class ControlPanelView(TemplateView):
     template_name = "dashboard/control_panel.html"
-    login_url = 'login'
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
-
         if action in ["ON", "OFF"]:
+            broker = Broker.objects.get(user=request.user)
             publish.single(
-                topic="home/relay1/control",
+                topic=broker.topic,
                 payload=action,
-                hostname="206.189.51.153",
-                port=1883,
-                auth={"username": "userA", "password": "12345678913"}
+                hostname=broker.host,
+                port=broker.port,
+                auth={'username': broker.username, 'password': broker.password}
             )
+        return self.render_to_response(self.get_context_data())
 
-        return render(request, self.template_name)
+
+class BrokerEditView(LoginRequiredMixin, UpdateView):
+    model = Broker
+    form_class = BrokerForm
+    template_name = 'dashboard/broker_form.html'
+    success_url = reverse_lazy('control-panel')
+
+    def get_object(self, queryset=None):
+        # Return or create this user's Broker instance
+        obj, created = Broker.objects.get_or_create(user=self.request.user)
+        return obj
+
 
 class RegisterView(CreateView):
     template_name = 'registration/register.html'
