@@ -6,6 +6,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from .models import Broker,Profile
 from .forms import BrokerForm,UserForm,ProfileForm
+import socket
+from socket import timeout as SocketTimeout
 
 class ControlPanelView(TemplateView):
     template_name = "dashboard/control_panel.html"
@@ -13,16 +15,33 @@ class ControlPanelView(TemplateView):
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
         if action in ["ON", "OFF"]:
-            broker = Broker.objects.get(user=request.user)
-            publish.single(
-                topic=broker.topic,
-                payload=action,
-                hostname=broker.host,
-                port=broker.port,
-                auth={'username': broker.username, 'password': broker.password}
-            )
-        return self.render_to_response(self.get_context_data())
+            try:
+                broker = Broker.objects.get(user=request.user)
 
+                # Set socket-level timeout
+                socket.setdefaulttimeout(0.1)  # seconds
+
+                publish.single(
+                    topic=broker.topic,
+                    payload=action,
+                    hostname=broker.host,
+                    port=broker.port,
+                    auth={'username': broker.username, 'password': broker.password}
+                )
+            except SocketTimeout:
+                # Optional: You can send a message to the template or log it
+                context = self.get_context_data()
+                context["error"] = "Connection to broker timed out."
+                return self.render_to_response(context)
+            except Exception as e:
+                context = self.get_context_data()
+                context["error"] = f"An error occurred: {str(e)}"
+                return self.render_to_response(context)
+            finally:
+                # Reset to default socket timeout (None)
+                socket.setdefaulttimeout(None)
+
+        return self.render_to_response(self.get_context_data())
 
 class BrokerEditView(LoginRequiredMixin, UpdateView):
     model = Broker
