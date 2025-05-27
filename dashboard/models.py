@@ -22,3 +22,24 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s profile"
+
+class SensorData(models.Model):
+    CONTROL_MODES = [
+        ('manual', 'Mode 1 - Manual'),
+        ('pir', 'Mode 2 - PIR Motion'),
+        ('photoresistor', 'Mode 3 - Photoresistor'),
+    ]
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    lamp_status = models.BooleanField("Lamp Status", default=False)
+    control_mode = models.CharField("Control Mode", max_length=20, choices=CONTROL_MODES, default='manual')
+    photoresistor_value = models.IntegerField("Photoresistor Value", default=0)
+    pir_motion_detected = models.BooleanField("PIR Motion Detected", default=False)
+    last_updated = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.user.username}'s sensor data"
+    
+    @property
+    def pir_status_text(self):
+        return "Motion detected" if self.pir_motion_detected else "No motion"

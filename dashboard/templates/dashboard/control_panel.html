@@ -2,17 +2,301 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Smart Home Control Panel</title>
+    <title>Smart Lamp Control Panel</title>
     <link rel="stylesheet" href="{% static 'dashboard/css/styles.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .control-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .title {
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .btn-control {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            border: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-on {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-on:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-off {
+            background: linear-gradient(45deg, #f44336, #da190b);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+        
+        .btn-off:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+        }
+        
+        .status-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .status-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .status-on {
+            background: #4CAF50;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+        }
+        
+        .status-off {
+            background: #757575;
+            box-shadow: 0 0 10px rgba(117, 117, 117, 0.3);
+        }
+        
+        .mode-section {
+            margin: 30px 0;
+        }
+        
+        .mode-label {
+            font-size: 18px;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .mode-select {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .mode-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+        
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .sensor-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .sensor-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .sensor-title {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .sensor-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .photoresistor-value {
+            color: #ffa500;
+        }
+        
+        .pir-value {
+            color: #4CAF50;
+        }
+        
+        .pir-no-motion {
+            color: #757575;
+        }
+        
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            color: #d32f2f;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .control-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+            
+            .control-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-control {
+                width: 200px;
+            }
+            
+            .sensor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-<body class="text-center p-5">
-    <h1 class="mb-4">Smart Home Control</h1>
+<body>
+    <div class="container mt-5">
+        <div class="control-container">
+            <h1 class="title">Smart Lamp Control Panel</h1>
+            
+            {% if error %}
+                <div class="error-message">
+                    {{ error }}
+                </div>
+            {% endif %}
+            
+            <!-- Control Buttons -->
+            <form method="post">
+                {% csrf_token %}
+                <div class="control-buttons">
+                    <button name="action" value="ON" class="btn-control btn-on">Turn ON</button>
+                    <button name="action" value="OFF" class="btn-control btn-off">Turn OFF</button>
+                </div>
+            </form>
+            
+            <!-- Lamp Status -->
+            <div class="status-section">
+                <div class="status-text">
+                    Lamp is: <span id="lamp-status">{% if sensor_data.lamp_status %}ON{% else %}OFF{% endif %}</span>
+                    <div class="status-indicator {% if sensor_data.lamp_status %}status-on{% else %}status-off{% endif %}" id="status-indicator"></div>
+                </div>
+            </div>
+            
+            <!-- Mode Selection -->
+            <div class="mode-section">
+                <div class="mode-label">Select Mode:</div>
+                <form method="post" id="mode-form">
+                    {% csrf_token %}
+                    <select name="mode" class="mode-select" id="mode-select" onchange="document.getElementById('mode-form').submit();">
+                        <option value="manual" {% if sensor_data.control_mode == 'manual' %}selected{% endif %}>Mode 1 - Manual</option>
+                        <option value="pir" {% if sensor_data.control_mode == 'pir' %}selected{% endif %}>Mode 2 - PIR Motion</option>
+                        <option value="photoresistor" {% if sensor_data.control_mode == 'photoresistor' %}selected{% endif %}>Mode 3 - Photoresistor</option>
+                    </select>
+                </form>
+            </div>
+            
+            <!-- Sensor Data -->
+            <div class="sensor-grid">
+                <div class="sensor-card">
+                    <div class="sensor-title">Photoresistor</div>
+                    <div class="sensor-value photoresistor-value" id="photoresistor-value">{{ sensor_data.photoresistor_value }}</div>
+                </div>
+                
+                <div class="sensor-card">
+                    <div class="sensor-title">PIR Sensor</div>
+                    <div class="sensor-value {% if sensor_data.pir_motion_detected %}pir-value{% else %}pir-no-motion{% endif %}" id="pir-value">
+                        {{ sensor_data.pir_status_text }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <form method="post">
-        {% csrf_token %}
-        <button name="action" value="ON" class="btn btn-success btn-lg m-2">Turn ON</button>
-        <button name="action" value="OFF" class="btn btn-danger btn-lg m-2">Turn OFF</button>
-    </form>
+    <script>
+        // Auto-refresh sensor data every 2 seconds
+        setInterval(function() {
+            fetch('/control/api/sensor-data/')
+                .then(response => response.json())
+                .then(data => {
+                    // Update lamp status
+                    const lampStatus = document.getElementById('lamp-status');
+                    const statusIndicator = document.getElementById('status-indicator');
+                    
+                    lampStatus.textContent = data.lamp_status ? 'ON' : 'OFF';
+                    
+                    if (data.lamp_status) {
+                        statusIndicator.className = 'status-indicator status-on';
+                    } else {
+                        statusIndicator.className = 'status-indicator status-off';
+                    }
+                    
+                    // Update photoresistor value
+                    document.getElementById('photoresistor-value').textContent = data.photoresistor_value;
+                    
+                    // Update PIR sensor status
+                    const pirValue = document.getElementById('pir-value');
+                    pirValue.textContent = data.pir_status_text;
+                    
+                    if (data.pir_motion_detected) {
+                        pirValue.className = 'sensor-value pir-value';
+                    } else {
+                        pirValue.className = 'sensor-value pir-no-motion';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching sensor data:', error);
+                });
+        }, 2000);
+    </script>
 </body>
 </html>
