@@ -16,7 +16,7 @@ class BrokerForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['email']  # if you want them to edit their auth-email here
+        fields = ['email']
 
 
 class ProfileForm(forms.ModelForm):
