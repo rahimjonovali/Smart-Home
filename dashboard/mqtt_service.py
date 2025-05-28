@@ -1,5 +1,4 @@
 import paho.mqtt.client as mqtt
-import json
 import logging
 from django.contrib.auth import get_user_model
 from .models import SensorData, Broker
@@ -67,12 +66,17 @@ class MQTTService:
                         sensor_data.photoresistor_value = int(payload)
                         sensor_data.save()
                         logger.info(f"Updated photoresistor value for user {broker.user.username}: {payload}")
+                                           
+
                     except ValueError:
                         logger.error(f"Invalid photoresistor value: {payload}")
-                
                 elif topic == "home/relay1/pir":
-                    # Update PIR sensor status
-                    motion_detected = payload.lower() in ['motion', 'detected', '1', 'true']
+                    motion_detected = payload
+                    if motion_detected == "Motion":
+                        motion_detected = True
+                    elif motion_detected == "No motion":
+                        motion_detected = False
+
                     sensor_data.pir_motion_detected = motion_detected
                     sensor_data.save()
                     logger.info(f"Updated PIR sensor for user {broker.user.username}: {payload}")
