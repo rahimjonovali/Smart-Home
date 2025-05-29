@@ -38,7 +38,8 @@ ESP32 Sensors ↔ MQTT Broker (Mosquitto) ↔ Django Backend ↔ sqlite3 ↔ Web
 - cd smart-home-dashboard
 
 - python -m venv venv
-- source venv/bin/activate  # On Windows: venv\Scripts\activate
+- On linux: source venv/bin/activate
+- On Windows: venv\Scripts\activate  
 
 - pip install -r requirements.txt
 
