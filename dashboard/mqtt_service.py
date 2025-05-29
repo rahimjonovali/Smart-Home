@@ -72,10 +72,12 @@ class MQTTService:
                         logger.error(f"Invalid photoresistor value: {payload}")
                 elif topic == "home/relay1/pir":
                     motion_detected = payload
-                    if motion_detected == "Motion":
+                    #flag = False
+                    if motion_detected == "Motion2":
                         motion_detected = True
-                    elif motion_detected == "No motion":
+                    elif motion_detected == "No motion2":
                         motion_detected = False
+
 
                     sensor_data.pir_motion_detected = motion_detected
                     sensor_data.save()
