@@ -1,8 +1,8 @@
 # 🏠 Smart Home IoT Dashboard
 
 This is a Django-based IoT dashboard that connects with an ESP32 microcontroller to monitor sensors (Photoresistor and PIR) and control home appliances via a relay using MQTT protocol. It enables remote monitoring and control of a smart home environment in real-time.
-This is Final Project work in Turin Polytechnic University in Tashkent by Yuldashev Khabibulloh, Rahimjonov Muhammadjon, Sunnatov Izzatulloh. 
-**This project is open-source and available under the MIT License**
+- This is Final Project work in Turin Polytechnic University in Tashkent by Yuldashev Khabibulloh, Rahimjonov Muhammadjon, Sunnatov Izzatulloh. 
+- **This project is open-source and available under the MIT License**
 
 ## 📌 Features
 
