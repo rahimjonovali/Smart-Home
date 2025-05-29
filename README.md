@@ -32,19 +32,19 @@ ESP32 Sensors ↔ MQTT Broker (Mosquitto) ↔ Django Backend ↔ sqlite3 ↔ Web
 
 ## ⚙️ Setup Instructions
 
-### 1. Clone the Repository and do other steps
+###  Clone the Repository and do other steps
 
-git clone https://github.com/rahimjonovali/Smart-Home.git
-cd smart-home-dashboard
+- git clone https://github.com/rahimjonovali/Smart-Home.git
+- cd smart-home-dashboard
 
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+- python -m venv venv
+- source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-pip install -r requirements.txt
+- pip install -r requirements.txt
 
-python manage.py makemigrations
-python manage.py migrate
+- python manage.py makemigrations
+- python manage.py migrate
 
-python manage.py runserver
+- python manage.py runserver
 
 
