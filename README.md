@@ -34,7 +34,7 @@ ESP32 Sensors ↔ MQTT Broker (Mosquitto) ↔ Django Backend ↔ sqlite3 ↔ Web
 
 ### 1. Clone the Repository and do other steps
 
-git clone https://github.com/yourusername/smart-home-dashboard.git
+git clone https://github.com/rahimjonovali/Smart-Home.git
 cd smart-home-dashboard
 
 python -m venv venv
