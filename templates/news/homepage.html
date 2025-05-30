@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Latest IoT News & Updates</h1>
+
+{% if news_list %}
+<div id="iotNewsCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        {% for item in news_list %}
+            <button type="button" data-bs-target="#iotNewsCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ forloop.counter }}"></button>
+        {% endfor %}
+    </div>
+    <div class="carousel-inner">
+        {% for item in news_list %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="d-flex justify-content-center align-items-center" style="height: 450px; overflow: hidden;">
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" class="d-block w-100 h-100 object-fit-cover" alt="{{ item.title }}">
+                {% else %}
+                    {# Placeholder image if no image is available #}
+                    <img src="https://via.placeholder.com/1200x450?text=No+Image+Available" class="d-block w-100 h-100 object-fit-cover" alt="No image">
+                {% endif %}
+            </div>
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 p-3 rounded">
+                <h5 class="text-white">{{ item.title }}</h5>
+                <p>{{ item.content|truncatechars:200 }}</p>
+                <small class="text-white-50">{{ item.created_at|date:"M d, Y" }}</small>
+                {# You might want to add a link to the full article here if you have a detail page #}
+                {# <p><a href="{% url 'news_detail' item.pk %}" class="btn btn-sm btn-info mt-2">Read More</a></p> #}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#iotNewsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#iotNewsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+{% else %}
+    <p>No news yet. Check back later!</p>
+{% endif %}
+
+
+{% comment %}
+{% if is_paginated %}
+    <nav>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+            <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+{% endcomment %}
+{% endblock %}
