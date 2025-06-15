@@ -1,18 +1,62 @@
 # Ignore environment variables file
 .env
+venv/
+ENV/
+.env/
+.env.local
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *.so
 
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
 # Django stuff:
+local_settings.py
 *.log
 *.pot
 *.pyc
 db.sqlite3
+db.sqlite3-journal
 media/
+media
 staticfiles/
 
 # VS Code files
 .vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
